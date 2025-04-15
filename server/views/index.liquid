@@ -2,16 +2,18 @@
 
 {% block content %}
 
-<h1 class="h1">{{ title }}</h1>
+<section class="home-section">
+  <input class="zoekHome" type="text" id="zoekWeer" name="zoekWeer" placeholder="Bijv. Amsterdam, Paris etc.">
+  
+  <ul>
+      {% for _city in weather %}
+          <li><a href="/{{ _city.name }}">
+          <span class="city-name">{{ _city.name }}</span> <span class="omschrijving">{{ _city.weather[0].description }}</span> <span class="temperatuur">{{ _city.main.temp }} °C</span>
+          <span class="local-time">{{ _city.time }}</span>
+          </a></li>      
+      {% endfor %}
+  </ul>
+</section>
 
-<ul class="grid">
-  {% for item in items %}
-    <li>
-      <a href="/plant/{{ item.id }}">
-        {% render 'server/components/card/card.liquid', item: item %}
-      </a>
-    </li>
-  {% endfor %}
-</ul>
 
 {% endblock %}

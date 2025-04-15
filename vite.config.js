@@ -1,10 +1,14 @@
-import { defineConfig } from 'vite';
+import {
+  defineConfig
+} from 'vite';
 import path from 'node:path';
-const __dirname = import.meta.dirname;
+const __dirname =
+  import.meta.dirname;
 
 // https://vitejs.dev/config/
 export default defineConfig({
   build: {
+    publicDir: 'public',
     minify: false,
     emptyOutDir: false,
     outDir: 'dist',
