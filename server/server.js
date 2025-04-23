@@ -27,33 +27,35 @@ app
   .use('/public', sirv('public'))
   .listen(3000, () => console.log('Server available on http://localhost:3000'));
 
+// Lijst van steden met hun tijdzones
 const cities = [{
     name: 'Amsterdam',
-    timezone: 'Europe/Amsterdam',
+    timezone: 'Europe/Amsterdam'
   },
   {
     name: 'Valencia',
-    timezone: 'Europe/Madrid',
+    timezone: 'Europe/Madrid'
   },
   {
     name: 'Paris',
-    timezone: 'Europe/Paris',
+    timezone: 'Europe/Paris'
   },
   {
     name: 'Sydney',
-    timezone: 'Australia/Sydney',
+    timezone: 'Australia/Sydney'
   },
   {
     name: 'Berlin',
-    timezone: 'Europe/Berlin',
+    timezone: 'Europe/Berlin'
   },
   {
     name: 'Helsinki',
-    timezone: 'Europe/Helsinki',
-  }
+    timezone: 'Europe/Helsinki'
+  },
 ];
-// Hier maar ik 6 verschillende steden aan
+// Hier maak ik 6 verschillende steden aan
 
+// Functie om de lokale tijd van een stad op te halen via de tijdzone
 function getCityWeather(timezone) {
   return new Intl.DateTimeFormat('nl-NL', {
     timeZone: timezone,
@@ -64,40 +66,56 @@ function getCityWeather(timezone) {
 }
 // Hier haal ik de tijd per stad op
 
+// Route voor de homepage
 app.get('/', async (req, res) => {
-  const allLocationsWeather = [];
+  const allLocationsWeather = []; // Hier slaan we alle weergegevens op
+  let weatherIcon;
 
-  let weatherIcon
   for (const city of cities) {
-
+    // Vraag weerdata op voor elke stad via de OpenWeatherMap API
     const weather = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city.name}&appid=${apiKey}&units=metric`);
     const weatherData = await weather.json();
-    const weatherIconId = weatherData.weather[0].icon
 
+    // Haal het icoon-ID op uit de weerdata
+    const weatherIconId = weatherData.weather[0].icon;
+
+    // Maak de URL aan voor het icoon
     if (weatherIconId) {
-      weatherIcon = `https://openweathermap.org/img/wn/${weatherIconId}@2x.png`
+      weatherIcon = `https://openweathermap.org/img/wn/${weatherIconId}@2x.png`;
     }
 
+    // Voeg lokale tijd toe aan de data
     weatherData.time = getCityWeather(city.timezone);
-    // Hier haal ik de tijd op van de stad
-    weatherData.weather[0].icon = weatherIcon
-    // Hier haal ik de icon op van de stad, er staat op 0 omdat het een array is
-    allLocationsWeather.push(weatherData);
 
+    // Voeg het icoon toe aan de juiste plek in de data
+    weatherData.weather[0].icon = weatherIcon;
+
+    // Voeg alles toe aan de lijst
+    allLocationsWeather.push(weatherData);
   }
 
+  console.log(allLocationsWeather);
+
+  // Geef de homepage weer met de opgehaalde weerdata
   return res.send(renderTemplate('server/views/index.liquid', {
     weather: allLocationsWeather
   }));
 });
 
-
-
+// Route voor een specifieke stadspagina
 app.get('/:city/', async (req, res) => {
+  const city = req.params.city; // Haal de stadsnaam uit de URL
+  const item = cities.find((item) => item.name === city); // Zoek of de stad in onze lijst zit
 
-  const city = req.params.city;
-  const item = cities.find((item) => item.name === city);
+  // Als de stad niet bestaat, stuur 404 terug
+  if (!item) {
+    return res.status(404).send('Not found');
+  }
 
+
+
+
+  // Stel headers in voor Freepik API
   const options = {
     method: 'GET',
     headers: {
@@ -105,34 +123,34 @@ app.get('/:city/', async (req, res) => {
     }
   };
 
+  // Vraag afbeelding op van Freepik op basis van stad
   const imageFetch = fetch(`https://api.freepik.com/v1/resources?filters[ai-generated][excluded]=1&term=${city}&filters[content_type][photo]=1`, options)
     .then(response => response.json())
     .catch(err => console.error(err));
 
   const images = await imageFetch;
 
-
+  // Haal de eerste afbeelding uit de resultaten
   const cityImage = await images.data[0].image.source.url;
 
+  // Vraag het weer op van OpenWeatherMap API
   const weather = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`);
-  const weatherData = await weather.json()
-  const weatherIconId = await weatherData.weather[0].icon
+  const weatherData = await weather.json();
 
-  let weatherIcon
+  // Haal het icoon op
+  const weatherIconId = await weatherData.weather[0].icon;
 
+  let weatherIcon;
+
+  // Maak de URL aan voor het icoon
   if (weatherIconId) {
-    weatherIcon = `https://openweathermap.org/img/wn/${weatherIconId}@2x.png`
+    weatherIcon = `https://openweathermap.org/img/wn/${weatherIconId}@2x.png`;
   }
 
+  // Voeg lokale tijd toe aan de weerdata
+  weatherData.time = getCityWeather(item.timezone);
 
-  weatherData.time = getCityWeather(city.timezone);
-
-  console.log(weatherData);
-
-
-  if (!item) {
-    return res.status(404).send('Not found');
-  }
+  // Toon de detailpagina met alle data
   return res.send(renderTemplate('server/views/detail.liquid', {
     title: `Detail page for ${city}`,
     item,
@@ -141,6 +159,7 @@ app.get('/:city/', async (req, res) => {
     weatherIcon: weatherIcon,
   }));
 });
+
 
 const renderTemplate = (template, data) => {
   const templateData = {

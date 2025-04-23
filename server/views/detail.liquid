@@ -18,12 +18,19 @@
 
       <section class="flexBox">
         <div class="middenBlok">
-          <span class="temperatuur">{{ weather.main.temp | round }} °C</span>
-          <img
-            class="icoontje"
-            src="{{weatherIcon}}"
-            alt="">
-          <div class="sunriseSet">
+          <section class="eersteBlok">
+            <p>Temperatuur</p>
+            <span class="temperatuur">{{ weather.main.temp | round }} °C</span>
+          </section>
+
+          <section class="tweedeBlok">
+            <p>Conditie</p>
+            <img
+              class="icoontje"
+              src="{{weatherIcon}}"
+              alt=""></section>
+          <section class="sunriseSet">
+            <p class="peen">Zon op / onder</p>
             <section class="rise">
               <svg
                 fill="none"
@@ -89,9 +96,12 @@
                   fill-rule="evenodd" /></svg>
               <p>{{ weather.sys.sunset | date: "%H:%M" }}</p>
             </section>
-          </div>
-          <p class="voeltals">Voelt aan als: {{ weather.main.feels_like | round }} °C</p>
-
+          </section>
+          <section class="derdeBlok">
+            <p class="ptwee">Gevoelstemperatuur</p>
+            <p class="voeltals">
+              {{ weather.main.feels_like | round }} °C</p>
+          </section>
         </div>
       </section>
     </div>
