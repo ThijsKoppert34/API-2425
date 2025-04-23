@@ -43,5 +43,51 @@ Zo kan je dus een bepaald soort foto's uitfilteren. Ik wilde ook nog zorgen dat 
 
 ## **🎯 Week 4**
 
+In deze laatste dag wilde ik nog 2 web-api's toevoegen. Ik dacht om view-transitions toe te voegen en *de visibilitychange api.* Deze api veranderd eigenlijk de titel van je pagina op verschillende momenten. De naam die bovenaan naast de favicon staat, veranderd bijvoorbeeld wanneer je van de pagina af gaat. 
+
+Omdat ik met steden werk heb ik de titel, wanneer je van de pagina af gaat, veranderd naar: **De stad wacht op je**, en wanneer je dan weer op de pagina zit: **Welkom!**
+
+De code ziet er als volgt uit: 
+
+**VisibilityChange api**
+ ```js 
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    document.title = 'De stad wacht op je';
+  } else {
+    document.title = 'Welkom!';
+  }
+})
+```
+
+**VisibilityChange api** 
+```js 
+document.addEventListener('navigate', () => {
+  if (!document.startViewTransition) {
+    return
+  } else {
+    document.startViewTransition(() => {
+      console.log('View transition started');
+    })
+  }
+})
+```
+**VisibilityChange api CSS** 
+
+```css
+@view-transition {
+  navigation: auto;
+}
+```
+
+Als een kleine korte reflectie voor mezelf had ik wat meer kunnen doen met de web api's vanaf de start. Ik was eigenlijk zo verdwaald aan het begin dat ik hier niet aan gedacht heb en daarom heb ik ze pas in de laatste week toegevoegd. Ik merk dat dit juist wel iets is wat ik begrijp en daarom vind ik het jammer dat ik hier niet eerder mee ben begonnen. Aan de andere kant ben ik wel blij dat ik hier al iets over geleerd heb!
+
+
+
+
+
+
+
+
 
 

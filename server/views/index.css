@@ -148,7 +148,9 @@ ul li a {
     object-fit: contain;
   }
 
-  & .voeltals {
+  & .voeltals,
+  .windSpeed,
+  .Luchtvochtigheid {
     font-size: 30px;
   }
 
@@ -159,7 +161,9 @@ ul li a {
     top: 20px;
   }
 
-  & .derdeBlok .ptwee {
+  & .derdeBlok .ptwee,
+  .vierdeBlok .pdrie,
+  .vijfdeBlok .pvier {
     position: absolute;
     top: 16rem;
   }

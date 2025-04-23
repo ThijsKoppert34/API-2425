@@ -102,6 +102,16 @@
             <p class="voeltals">
               {{ weather.main.feels_like | round }} °C</p>
           </section>
+          <section class="vierdeBlok">
+            <p class="pdrie">Windsnelheid</p>
+            <p class="windSpeed">
+              {{ weather.wind.speed | round }} m/s</p>
+          </section>
+          <section class="vijfdeBlok">
+            <p class="pvier">Luchtvochtigheid</p>
+            <p class="Luchtvochtigheid">
+              {{ weather.main.humidity | round }} %</p>
+          </section>
         </div>
       </section>
     </div>
