@@ -82,6 +82,9 @@ document.addEventListener('navigate', () => {
 
 Als een kleine korte reflectie voor mezelf had ik wat meer kunnen doen met de web api's vanaf de start. Ik was eigenlijk zo verdwaald aan het begin dat ik hier niet aan gedacht heb en daarom heb ik ze pas in de laatste week toegevoegd. Ik merk dat dit juist wel iets is wat ik begrijp en daarom vind ik het jammer dat ik hier niet eerder mee ben begonnen. Aan de andere kant ben ik wel blij dat ik hier al iets over geleerd heb!
 
+![Home pagina final](public/home.png)
+![Detail pagina final](public/detail.png)
+
 
 
 
