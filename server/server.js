@@ -19,32 +19,13 @@ const engine = new Liquid({
 
 const app = new App();
 const apiKey = process.env.API_KEY;
-const location = 'Lisse';
+const apiKeyFreepik = process.env.API_KEY_FREEPIK;
 
 app
   .use(logger())
   .use('/', sirv('dist'))
   .use('/public', sirv('public'))
   .listen(3000, () => console.log('Server available on http://localhost:3000'));
-
-// async function getWeather() {
-//   try {
-//     const response = await fetch(url);
-
-//     if (!response.ok) {
-//       throw new Error(`HTTP error! Status: ${response.status}`);
-//     }
-
-//     const data = await response.json();
-//     console.log(data);
-
-//   } catch (error) {
-//     console.error("Error fetching weather data:", error);
-//   }
-// }
-
-// getWeather();
-
 
 const cities = [{
     name: 'Amsterdam',
@@ -70,8 +51,8 @@ const cities = [{
     name: 'Helsinki',
     timezone: 'Europe/Helsinki',
   }
-
 ];
+// Hier maar ik 6 verschillende steden aan
 
 function getCityWeather(timezone) {
   return new Intl.DateTimeFormat('nl-NL', {
@@ -81,43 +62,83 @@ function getCityWeather(timezone) {
     second: '2-digit',
   }).format(new Date());
 }
+// Hier haal ik de tijd per stad op
 
 app.get('/', async (req, res) => {
   const allLocationsWeather = [];
 
+  let weatherIcon
   for (const city of cities) {
 
     const weather = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city.name}&appid=${apiKey}&units=metric`);
     const weatherData = await weather.json();
-    // getCityWeather(weatherData.timezone);
-    // setInterval(() => {
-    //   console.log(city.name, getCityWeather(city.timezone));
-    // }, 1000)
-    // console.log(weatherData, 'weatherData');
+    const weatherIconId = weatherData.weather[0].icon
+
+    if (weatherIconId) {
+      weatherIcon = `https://openweathermap.org/img/wn/${weatherIconId}@2x.png`
+    }
 
     weatherData.time = getCityWeather(city.timezone);
+    // Hier haal ik de tijd op van de stad
+    weatherData.weather[0].icon = weatherIcon
+    // Hier haal ik de icon op van de stad, er staat op 0 omdat het een array is
     allLocationsWeather.push(weatherData);
+
   }
 
-  console.log(allLocationsWeather, 'allLocationsWeather');
-
   return res.send(renderTemplate('server/views/index.liquid', {
-    weather: allLocationsWeather,
+    weather: allLocationsWeather
   }));
 });
 
 
 
 app.get('/:city/', async (req, res) => {
+
   const city = req.params.city;
   const item = cities.find((item) => item.name === city);
+
+  const options = {
+    method: 'GET',
+    headers: {
+      'x-freepik-api-key': apiKeyFreepik
+    }
+  };
+
+  const imageFetch = fetch(`https://api.freepik.com/v1/resources?filters[ai-generated][excluded]=1&term=${city}&filters[content_type][photo]=1`, options)
+    .then(response => response.json())
+    .catch(err => console.error(err));
+
+  const images = await imageFetch;
+
+
+  const cityImage = await images.data[0].image.source.url;
+
+  const weather = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`);
+  const weatherData = await weather.json()
+  const weatherIconId = await weatherData.weather[0].icon
+
+  let weatherIcon
+
+  if (weatherIconId) {
+    weatherIcon = `https://openweathermap.org/img/wn/${weatherIconId}@2x.png`
+  }
+
+
+  weatherData.time = getCityWeather(city.timezone);
+
+  console.log(weatherData);
+
 
   if (!item) {
     return res.status(404).send('Not found');
   }
   return res.send(renderTemplate('server/views/detail.liquid', {
     title: `Detail page for ${city}`,
-    item
+    item,
+    image: cityImage,
+    weather: weatherData,
+    weatherIcon: weatherIcon,
   }));
 });
 
@@ -129,33 +150,3 @@ const renderTemplate = (template, data) => {
 
   return engine.renderFileSync(template, templateData);
 };
-
-// const cities = [{
-//     id: 'homeBlok1',
-//     name: 'Amsterdam'
-//   },
-//   {
-//     id: 'homeBlok2',
-//     name: 'Rotterdam'
-//   },
-//   {
-//     id: 'homeBlok3',
-//     name: 'Utrecht'
-//   },
-//   {
-//     id: 'homeBlok4',
-//     name: 'Eindhoven'
-//   },
-//   {
-//     id: 'homeBlok5',
-//     name: 'Groningen'
-//   },
-//   {
-//     id: 'homeBlok6',
-//     name: 'Maastricht'
-//   }
-// ];
-
-
-
-// console.log('Datum en tijd in Amsterdam:', datumTijdInTijdzone('Europe/Amsterdam'));

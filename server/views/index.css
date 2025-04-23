@@ -5,7 +5,7 @@
 }
 
 body {
-  background-image: url("./public/achtergrond_nacht-01-01.png");
+  background-image: url("./public/NATUREgoed-01.png");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
@@ -81,4 +81,78 @@ ul li a {
 
 .omschrijving {
   font-size: 20px;
+}
+
+.detailPagina {
+  & h1 {
+    font-size: 2rem;
+    text-align: center;
+    margin-top: 3rem;
+  }
+
+  & .middenBlok {
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    height: 65vh;
+    width: 65vw;
+    margin: 1rem;
+    border-radius: 8px;
+    margin-top: 3rem;
+    display: grid;
+    grid-template-columns: repeat(3, 2fr);
+    grid-template-rows: repeat(2, 1fr);
+    place-items: center;
+  }
+
+  & .flexBox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  & .achtergrondDetail {
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    left: 0;
+    top: 0;
+    object-fit: cover;
+  }
+
+  .content-wrapper {
+    z-index: 1;
+    position: relative;
+  }
+
+  & svg {
+    width: 20%;
+    height: 20%;
+  }
+
+  & .sunriseSet {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    & section {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 30px;
+    }
+  }
+
+  & .icoontje {
+    width: 50%;
+    object-fit: contain;
+  }
+
+  & .voeltals {
+    font-size: 30px;
+  }
+
+}
+
+@view-transition {
+  navigation: auto;
 }

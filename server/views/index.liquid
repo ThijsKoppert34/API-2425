@@ -2,18 +2,21 @@
 
 {% block content %}
 
-<section class="home-section">
-  <input class="zoekHome" type="text" id="zoekWeer" name="zoekWeer" placeholder="Bijv. Amsterdam, Paris etc.">
-  
-  <ul>
+  <section class="home-section">
+
+    <ul>
       {% for _city in weather %}
-          <li><a href="/{{ _city.name }}">
-          <span class="city-name">{{ _city.name }}</span> <span class="omschrijving">{{ _city.weather[0].description }}</span> <span class="temperatuur">{{ _city.main.temp }} °C</span>
-          <span class="local-time">{{ _city.time }}</span>
-          </a></li>      
+        <li>
+          <a href="/{{ _city.name }}">
+            <span class="city-name">{{ _city.name }}</span>
+            <img src="{{ _city.weather[0].icon }}" alt="">
+            <span class="temperatuur">{{ _city.main.temp | round }} °C</span>
+            <span class="local-time">{{ _city.time }}</span>
+          </a>
+        </li>
       {% endfor %}
-  </ul>
-</section>
+    </ul>
+  </section>
 
 
 {% endblock %}
